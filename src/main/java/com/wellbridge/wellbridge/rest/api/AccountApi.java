@@ -9,7 +9,7 @@ import com.wellbridge.wellbridge.rest.dto.responses.account.ConnexionAccountResp
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 public interface AccountApi {

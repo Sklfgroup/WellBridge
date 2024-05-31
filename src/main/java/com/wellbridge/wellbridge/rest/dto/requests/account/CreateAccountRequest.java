@@ -6,12 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbridge.wellbridge.dao.entities.account.AccountEntity;
 import com.wellbridge.wellbridge.dao.entities.account.UserRole;
 
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,6 +21,7 @@ public record CreateAccountRequest(
         @NotBlank(message = "Last name is required")
         @JsonProperty(value = "lastname", required = true)
         String lastname,
+
         @NotBlank(message = "username is required")
         @JsonProperty(value = "username", required = true)
         String username,
