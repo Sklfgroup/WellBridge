@@ -3,9 +3,10 @@ package com.wellbridge.wellbridge.rest.controllers;
 import com.wellbridge.wellbridge.dao.entities.account.AccountEntity;
 import com.wellbridge.wellbridge.dao.entities.repository.AccountRepository;
 import com.wellbridge.wellbridge.rest.api.AccountApi;
-import com.wellbridge.wellbridge.rest.dto.requests.account.ConnexionAccountRequest;
-import com.wellbridge.wellbridge.rest.dto.responses.account.ConnexionAccountResponse;
+import com.wellbridge.wellbridge.rest.dto.requests.account.*;
+import com.wellbridge.wellbridge.rest.dto.responses.account.*;
 import com.wellbridge.wellbridge.dao.entities.account.UserRole;
+import com.wellbridge.wellbridge.security.jwt.JwtTokenUtil;
 import com.wellbridge.wellbridge.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,12 @@ public class AccountController implements AccountApi {
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
     private final AccountRepository accountRepository;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AccountController(AccountService accountService, PasswordEncoder passwordEncoder, AccountRepository accountRepository) {
+    public AccountController(AccountService accountService, JwtTokenUtil jwtTokenUtil,  PasswordEncoder passwordEncoder, AccountRepository accountRepository) {
         this.accountService = accountService;
+        this.jwtTokenUtil =jwtTokenUtil;
         this.passwordEncoder = passwordEncoder;
         this.accountRepository = accountRepository;
     }
@@ -44,22 +47,48 @@ public class AccountController implements AccountApi {
         return ResponseEntity.ok(response);
     }
 
+    @Override
+    @PutMapping("/update/{id}")
+    public ResponseEntity<AccountDataResponse> updateAccount(@PathVariable Long id, @RequestBody UpdateAccountRequest request) {
+        AccountEntity account = accountService.getAccountById(id);
+        if (account != null) {
+            if (request.getFirstname() != null) account.setFirstname(request.getFirstname());
+            if (request.getLastname() != null) account.setLastname(request.getLastname());
+            if (request.getUsername() != null) account.setUsername(request.getUsername());
+            if (request.getNumber() != null) account.setNumber(request.getNumber());
+            if (request.getAdresse() != null) account.setAdresse(request.getAdresse());
+
+            AccountEntity updatedAccount = accountRepository.save(account);
+            return ResponseEntity.ok(new AccountDataResponse(updatedAccount));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PreAuthorize("hasRole('SUPERADMINISTRATOR')")
     @PostMapping("/create-admin")
-    public AccountEntity createAdmin(@RequestBody AccountEntity adminAccount) {
-        return accountService.createAdminAccount(adminAccount);
+    public ResponseEntity<AdminResponse> createAdmin(@RequestBody CreateAdminRequest adminRequest) {
+        AccountEntity adminAccount = adminRequest.toEntity();
+        AccountEntity createdAdmin = accountService.createAdminAccount(adminAccount);
+        return ResponseEntity.ok(new AdminResponse(createdAdmin));
     }
+
+
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PostMapping("/create-patient")
-    public ResponseEntity<AccountEntity> createPatientAccount(@RequestBody AccountEntity patientAccount) {
-        return ResponseEntity.ok(accountService.createPatientAccount(patientAccount));
+    public ResponseEntity<PatientResponse> createPatient(@RequestBody CreatePatientRequest patientRequest) {
+        AccountEntity patientAccount = patientRequest.toEntity();
+        AccountEntity createdPatient = accountService.createPatientAccount(patientAccount);
+        return ResponseEntity.ok(new PatientResponse(createdPatient));
     }
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PostMapping("/create-medecin")
-    public ResponseEntity<AccountEntity> createMedecinAccount(@RequestBody AccountEntity medecinAccount) {
-        return ResponseEntity.ok(accountService.createMedecinAccount(medecinAccount));
+    public ResponseEntity<MedecinResponse> createMedecin(@RequestBody CreateMedecinRequest medecinRequest) {
+        AccountEntity medecinAccount = medecinRequest.toEntity();
+        AccountEntity createdMedecin = accountService.createMedecinAccount(medecinAccount);
+        return ResponseEntity.ok(new MedecinResponse(createdMedecin));
     }
 
 

@@ -21,7 +21,7 @@ public class AccountDataResponse extends BaseDto {
     private String username;
     private String code;
     private String number;
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private String adresse;
     private String registrationNumber;
     private UserRole function;

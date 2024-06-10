@@ -39,7 +39,7 @@ public class AccountEntity extends BaseEntity {
     private String number;
 
     @Column(name="dateOfBirth")
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     @Column(name = "adresse")
     private String adresse; // Correction de l'orthographe de "adresse"

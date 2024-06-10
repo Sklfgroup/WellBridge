@@ -4,6 +4,7 @@ import com.wellbridge.wellbridge.dao.entities.account.AccountEntity;
 import com.wellbridge.wellbridge.dao.entities.account.UserRole;
 import com.wellbridge.wellbridge.dao.entities.repository.AccountRepository;
 import com.wellbridge.wellbridge.exceptions.ResourceNotFoundException;
+import com.wellbridge.wellbridge.rest.dto.requests.account.UpdateAccountRequest;
 import com.wellbridge.wellbridge.security.jwt.JwtTokenUtil;
 import com.wellbridge.wellbridge.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,10 @@ public class AccountServiceImpl implements AccountService {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+    public AccountServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder,JwtTokenUtil jwtTokenUtil) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
     @Override
     public AccountEntity createAdminAccount(AccountEntity adminAccount) {
@@ -36,6 +38,19 @@ public class AccountServiceImpl implements AccountService {
         }
         adminAccount.setPassword(passwordEncoder.encode(adminAccount.getPassword()));
         return accountRepository.save(adminAccount);
+    }
+
+    @Override
+    public AccountEntity updateAccount(Long id, UpdateAccountRequest request) {
+        AccountEntity account = accountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        if (request.getFirstname() != null) account.setFirstname(request.getFirstname());
+        if (request.getLastname() != null) account.setLastname(request.getLastname());
+        if (request.getUsername() != null) account.setUsername(request.getUsername());
+        if (request.getNumber() != null) account.setNumber(request.getNumber());
+        if (request.getAdresse() != null) account.setAdresse(request.getAdresse());
+
+        return accountRepository.save(account);
     }
 
     @Override
@@ -84,6 +99,8 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountEntity> getAccountsByRole(UserRole role) {
         return accountRepository.findByUserRole(role);
     }
+
+
 
     @Override
     public AccountEntity authenticate(String username, String password) {

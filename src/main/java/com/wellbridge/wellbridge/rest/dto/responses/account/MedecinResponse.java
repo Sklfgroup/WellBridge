@@ -1,24 +1,17 @@
 package com.wellbridge.wellbridge.rest.dto.responses.account;
 
-
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wellbridge.wellbridge.dao.entities.account.AccountEntity;
 import com.wellbridge.wellbridge.dao.entities.account.UserRole;
-import com.wellbridge.wellbridge.rest.dto.responses.BaseDto;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
 @Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ConnexionAccountResponse extends BaseDto {
+public class MedecinResponse {
     private String uuid;
     private String firstname;
     private String lastname;
@@ -28,11 +21,9 @@ public class ConnexionAccountResponse extends BaseDto {
     private String dateOfBirth;
     private String adresse;
     private String registrationNumber;
-    private UserRole function;
-    private String token;
+    private UserRole userRole;
 
-
-    public ConnexionAccountResponse(AccountEntity entity) {
+    public MedecinResponse(AccountEntity entity) {
         this.uuid = entity.getUuid();
         this.firstname = entity.getFirstname();
         this.lastname = entity.getLastname();
@@ -42,7 +33,6 @@ public class ConnexionAccountResponse extends BaseDto {
         this.dateOfBirth = entity.getDateOfBirth();
         this.adresse = entity.getAdresse();
         this.registrationNumber = entity.getRegistrationNumber();
-        this.function = entity.getUserRole();
-        this.token = entity.getToken(); // Assuming token is set elsewhere
+        this.userRole = entity.getUserRole();
     }
 }
