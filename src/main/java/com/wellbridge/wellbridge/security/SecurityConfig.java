@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/accounts/authenticate").permitAll()
                         .requestMatchers("/api/accounts").permitAll()
                         .requestMatchers("/api/accounts/**").permitAll()
+                        .requestMatchers("/api/medical-specialities").permitAll()
+                        .requestMatchers("/api/medical-specialities/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/accounts/create-admin").permitAll() // Autoriser uniquement les SUPERADMINISTRATORS à créer un compte admin
                         .requestMatchers(HttpMethod.POST, "/api/accounts/create-medecin").permitAll() // Autoriser uniquement les ADMINISTRATORS à créer un compte medecin
                         .requestMatchers(HttpMethod.POST, "/api/accounts/create-patient").permitAll() // Autoriser uniquement les ADMINISTRATORS à créer un compte patieent
