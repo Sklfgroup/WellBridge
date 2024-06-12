@@ -1,13 +1,11 @@
 package com.wellbridge.wellbridge.dao.entities.account;
 
 import com.wellbridge.wellbridge.dao.entities.BaseEntity;
+import com.wellbridge.wellbridge.dao.entities.patient.MedicalInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Date;
-
 
 @Getter
 @Setter
@@ -20,10 +18,10 @@ public class AccountEntity extends BaseEntity {
     private Long id;
     private boolean active = true;
 
-    @Column (name ="firstname")
+    @Column(name ="firstname")
     private String firstname;
 
-    @Column (name ="lastname")
+    @Column(name ="lastname")
     private String lastname;
 
     @Column(name ="password")
@@ -46,18 +44,17 @@ public class AccountEntity extends BaseEntity {
 
     @Column(name="registrationNumber")
     private String registrationNumber;
+
     @Column(name = "isNotLocked", nullable = false)
     private boolean isNotLocked = false;
-    private boolean firstUsage = true;
 
+    private boolean firstUsage = true;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    private MedicalInfo medicalInfo;
 
     @Transient
     private String token;

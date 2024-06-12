@@ -3,6 +3,7 @@ package com.wellbridge.wellbridge.rest.dto.requests.account;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wellbridge.wellbridge.dao.entities.account.AccountEntity;
 import com.wellbridge.wellbridge.dao.entities.account.UserRole;
+import com.wellbridge.wellbridge.dao.entities.patient.MedicalInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
@@ -47,6 +48,11 @@ public record CreatePatientRequest(
         entity.setDateOfBirth(dateOfBirth);
         entity.setAdresse(adresse);
         entity.setUserRole(userRole);
+
+        // Création de l'information médicale
+        MedicalInfo medicalInfo = new MedicalInfo();
+        entity.setMedicalInfo(medicalInfo);
+        medicalInfo.setAccount(entity);
         return entity;
     }
 }

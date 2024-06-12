@@ -13,8 +13,8 @@ public interface AccountService {
     AccountEntity createAdminAccount(AccountEntity adminAccount);
     AccountEntity createPatientAccount(AccountEntity patientAccount);
     AccountEntity createMedecinAccount(AccountEntity medecinAccount);
-    AccountEntity updateAccount(Long id, UpdateAccountRequest request);
-    AccountEntity getAccountById(Long id);
+    AccountEntity updateAccount(String uuid, UpdateAccountRequest request);
+    AccountEntity getAccountByUuid(String uuid);
     AccountEntity getAccountByUsername(String username);
     List<AccountEntity> getAllAccounts();
     List<AccountEntity> getAccountsByRole(UserRole role);

@@ -5,29 +5,35 @@ import com.wellbridge.wellbridge.dao.entities.account.UserRole;
 import com.wellbridge.wellbridge.rest.dto.requests.account.*;
 import com.wellbridge.wellbridge.rest.dto.responses.account.*;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 public interface AccountApi {
-
     @PostMapping("/authenticate")
     ResponseEntity<ConnexionAccountResponse> authenticate(@RequestBody ConnexionAccountRequest request);
-    ResponseEntity<AdminResponse> createAdmin(CreateAdminRequest request);
 
-    ResponseEntity<MedecinResponse> createMedecin(CreateMedecinRequest request);
+    @PutMapping("/update/{uuid}")
+    ResponseEntity<AccountDataResponse> updateAccount(@PathVariable String uuid, @RequestBody UpdateAccountRequest request);
 
-    ResponseEntity<PatientResponse> createPatient(CreatePatientRequest request);
-    @PutMapping("/update/{id}")
-    ResponseEntity<AccountDataResponse> updateAccount(@PathVariable Long id, @RequestBody UpdateAccountRequest request);
+    @GetMapping("/uuid/{uuid}")
+    ResponseEntity<AccountEntity> getAccountByUuid(@PathVariable String uuid);
 
-    ResponseEntity<AccountEntity> getAccountById(Long id);
+    @GetMapping("/username/{username}")
+    ResponseEntity<AccountEntity> getAccountByUsername(@PathVariable String username);
 
-    ResponseEntity<AccountEntity> getAccountByUsername(String username);
-
+    @GetMapping
     ResponseEntity<List<AccountEntity>> getAllAccounts();
 
-    ResponseEntity<List<AccountEntity>> getAccountsByRole(UserRole role);
+    @GetMapping("/role/{role}")
+    ResponseEntity<List<AccountEntity>> getAccountsByRole(@PathVariable UserRole role);
+
+    @PostMapping("/create-admin")
+    ResponseEntity<AdminResponse> createAdmin(@RequestBody CreateAdminRequest adminRequest);
+
+    @PostMapping("/create-patient")
+    ResponseEntity<PatientResponse> createPatient(@RequestBody CreatePatientRequest patientRequest);
+
+    @PostMapping("/create-medecin")
+    ResponseEntity<MedecinResponse> createMedecin(@RequestBody CreateMedecinRequest medecinRequest);
 }

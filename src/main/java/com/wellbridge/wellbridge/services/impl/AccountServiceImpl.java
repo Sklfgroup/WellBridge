@@ -2,6 +2,7 @@ package com.wellbridge.wellbridge.services.impl;
 
 import com.wellbridge.wellbridge.dao.entities.account.AccountEntity;
 import com.wellbridge.wellbridge.dao.entities.account.UserRole;
+import com.wellbridge.wellbridge.dao.entities.patient.MedicalInfo;
 import com.wellbridge.wellbridge.dao.entities.repository.AccountRepository;
 import com.wellbridge.wellbridge.exceptions.ResourceNotFoundException;
 import com.wellbridge.wellbridge.rest.dto.requests.account.UpdateAccountRequest;
@@ -12,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -22,8 +22,10 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder,JwtTokenUtil jwtTokenUtil) {
+    public AccountServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder,
+                              JwtTokenUtil jwtTokenUtil) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -41,8 +43,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountEntity updateAccount(Long id, UpdateAccountRequest request) {
-        AccountEntity account = accountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Account not found"));
+    public AccountEntity updateAccount(String uuid, UpdateAccountRequest request) {
+        AccountEntity account = accountRepository.findByUuid(uuid)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
         if (request.getFirstname() != null) account.setFirstname(request.getFirstname());
         if (request.getLastname() != null) account.setLastname(request.getLastname());
@@ -54,6 +57,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountEntity getAccountByUuid(String uuid) {
+        return accountRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with uuid " + uuid));
+    }
+
+   @Override
     public AccountEntity createPatientAccount(AccountEntity patientAccount) {
         if (patientAccount.getUserRole() != UserRole.PATIENT) {
             throw new IllegalArgumentException("Only PATIENT accounts can be created with this method");
@@ -62,8 +71,16 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("Username already exists");
         }
         patientAccount.setPassword(passwordEncoder.encode(patientAccount.getPassword()));
+
+       // Création de l'information médicale
+       MedicalInfo medicalInfo = new MedicalInfo();
+       patientAccount.setMedicalInfo(medicalInfo);
+       medicalInfo.setAccount(patientAccount);
+
         return accountRepository.save(patientAccount);
     }
+
+
 
     @Override
     public AccountEntity createMedecinAccount(AccountEntity medecinAccount) {
@@ -78,11 +95,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-    @Override
-    public AccountEntity getAccountById(Long id) {
-        return accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id " + id));
-    }
+
 
     @Override
     public AccountEntity getAccountByUsername(String username) {
