@@ -20,6 +20,7 @@ public class PatientResponse {
     private String dateOfBirth;
     private String adresse;
     private UserRole userRole;
+    private String BloodGroup;
 
     public PatientResponse(AccountEntity entity) {
         this.uuid = entity.getUuid();
@@ -29,6 +30,7 @@ public class PatientResponse {
         this.number = entity.getNumber();
         this.dateOfBirth = entity.getDateOfBirth();
         this.adresse = entity.getAdresse();
+        this.BloodGroup = entity.getBloodGroup();
         this.userRole = entity.getUserRole();
     }
 }

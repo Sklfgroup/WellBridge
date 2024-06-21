@@ -1,6 +1,5 @@
 package com.wellbridge.wellbridge.dao.entities.patient;
 
-
 import com.wellbridge.wellbridge.dao.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,6 +25,9 @@ public class DossierMedical extends BaseEntity {
 
     @Column(name = "details")
     private String details;
+
+    @Column(name = "code", unique = true, nullable = false)
+    private String code;
 
     @ManyToMany
     @JoinTable(name = "dossier_medical_speciality",

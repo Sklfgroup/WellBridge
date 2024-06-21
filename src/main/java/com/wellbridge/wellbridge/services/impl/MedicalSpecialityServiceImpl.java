@@ -1,6 +1,5 @@
 package com.wellbridge.wellbridge.services.impl;
 
-
 import com.wellbridge.wellbridge.dao.entities.patient.DossierMedical;
 import com.wellbridge.wellbridge.dao.entities.patient.MedicalSpeciality;
 import com.wellbridge.wellbridge.dao.entities.repository.DossierMedicalRepository;
@@ -20,9 +19,9 @@ public class MedicalSpecialityServiceImpl implements MedicalSpecialityService {
 
     @Autowired
     private MedicalSpecialityRepository medicalSpecialityRepository;
+
     @Autowired
     private DossierMedicalRepository dossierMedicalRepository;
-
 
     private MedicalSpecialityResponseDTO convertToDTO(MedicalSpeciality medicalSpeciality) {
         MedicalSpecialityResponseDTO dto = new MedicalSpecialityResponseDTO();
@@ -37,16 +36,19 @@ public class MedicalSpecialityServiceImpl implements MedicalSpecialityService {
         return entity;
     }
 
-
     @Override
     public MedicalSpecialityResponseDTO createMedicalSpeciality(MedicalSpecialityRequestDTO medicalSpecialityRequestDTO) {
-        String specialityName = medicalSpecialityRequestDTO.getName();
-        Optional<MedicalSpeciality> existingSpecialityOptional = medicalSpecialityRepository.findByName(specialityName);
-        if (existingSpecialityOptional.isPresent()) {
-            throw new IllegalArgumentException("The spécialities exist in the BD");
+        Optional<MedicalSpeciality> existingSpeciality = medicalSpecialityRepository.findByName(medicalSpecialityRequestDTO.getName());
+        if (existingSpeciality.isPresent()) {
+            throw new IllegalArgumentException("The speciality already exists.");
         }
+
         MedicalSpeciality medicalSpeciality = convertToEntity(medicalSpecialityRequestDTO);
-        return convertToDTO(medicalSpecialityRepository.save(medicalSpeciality));
+        MedicalSpeciality savedSpeciality = medicalSpecialityRepository.save(medicalSpeciality);
+
+        // Associer la nouvelle spécialité à tous les dossiers médicaux existants
+        associateSpecialityToAllMedicalRecords(savedSpeciality.getId());
+        return convertToDTO(savedSpeciality);
     }
 
     @Override
@@ -78,18 +80,13 @@ public class MedicalSpecialityServiceImpl implements MedicalSpecialityService {
 
     @Override
     public void associateSpecialityToAllMedicalRecords(Long specialityId) {
-        Optional<MedicalSpeciality> specialityOptional = medicalSpecialityRepository.findById(specialityId);
-        if (specialityOptional.isPresent()) {
-            MedicalSpeciality speciality = specialityOptional.get();
-            List<DossierMedical> allMedicalRecords = dossierMedicalRepository.findAll();
-            allMedicalRecords.forEach(record -> {
-                record.getMedicalSpecialities().add(speciality);
-                dossierMedicalRepository.save(record);
-            });
-        } else {
-            throw new IllegalArgumentException("Speciality not found");
+        MedicalSpeciality speciality = medicalSpecialityRepository.findById(specialityId)
+                .orElseThrow(() -> new IllegalArgumentException("Speciality not found"));
+
+        List<DossierMedical> allDossiers = dossierMedicalRepository.findAll();
+        for (DossierMedical dossier : allDossiers) {
+            dossier.getMedicalSpecialities().add(speciality);
+            dossierMedicalRepository.save(dossier);
         }
     }
-
-
 }

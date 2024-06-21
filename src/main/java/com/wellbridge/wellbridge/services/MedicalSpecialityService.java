@@ -12,6 +12,6 @@ public interface MedicalSpecialityService {
     List<MedicalSpecialityResponseDTO> getAllMedicalSpecialities();
     Optional<MedicalSpecialityResponseDTO> getMedicalSpecialityById(Long id);
     MedicalSpecialityResponseDTO updateMedicalSpeciality(Long id, MedicalSpecialityRequestDTO medicalSpecialityRequestDTO);
-    void associateSpecialityToAllMedicalRecords(Long specialityId);
     void deleteMedicalSpeciality(Long id);
+    void associateSpecialityToAllMedicalRecords(Long specialityId);
 }

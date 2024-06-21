@@ -39,6 +39,11 @@ public class AccountEntity extends BaseEntity {
     @Column(name="dateOfBirth")
     private String dateOfBirth;
 
+    @Column(name="BloodGroup")
+    private String BloodGroup;
+
+
+
     @Column(name = "adresse")
     private String adresse; // Correction de l'orthographe de "adresse"
 

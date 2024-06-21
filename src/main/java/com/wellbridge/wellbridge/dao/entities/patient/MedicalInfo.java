@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,8 +25,11 @@ public class MedicalInfo extends BaseEntity {
     private AccountEntity account;
 
     @OneToOne(mappedBy = "medicalInfo", cascade = CascadeType.ALL)
-    private AntecedentMedical antecedentMedical;
-
-    @OneToOne(mappedBy = "medicalInfo", cascade = CascadeType.ALL)
     private DossierMedical dossierMedical;
+
+    @ManyToMany
+    @JoinTable(name = "medical_info_history",
+            joinColumns = @JoinColumn(name = "medical_info_id"),
+            inverseJoinColumns = @JoinColumn(name = "medical_history_id"))
+    private Set<MedicalHistory> medicalHistories = new HashSet<>();
 }

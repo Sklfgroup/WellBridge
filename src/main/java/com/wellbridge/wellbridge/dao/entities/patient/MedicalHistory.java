@@ -10,17 +10,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "medical_specialities")
-public class MedicalSpeciality extends BaseEntity {
+@Table(name = "medical_history")
+public class MedicalHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    public MedicalSpeciality(String name) {
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    // Constructeur
+    public MedicalHistory(String name, String imageUrl) {
         this.name = name;
+        this.imageUrl = imageUrl;
     }
 }
-

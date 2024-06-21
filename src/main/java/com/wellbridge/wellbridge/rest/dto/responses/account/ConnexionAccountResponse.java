@@ -26,6 +26,7 @@ public class ConnexionAccountResponse extends BaseDto {
     private String code;
     private String number;
     private String dateOfBirth;
+    private String BloodGroup;
     private String adresse;
     private String registrationNumber;
     private UserRole function;
@@ -39,6 +40,7 @@ public class ConnexionAccountResponse extends BaseDto {
         this.username = entity.getUsername();
         this.code = entity.getCode();
         this.number = entity.getNumber();
+        this.BloodGroup = entity.getBloodGroup();
         this.dateOfBirth = entity.getDateOfBirth();
         this.adresse = entity.getAdresse();
         this.registrationNumber = entity.getRegistrationNumber();

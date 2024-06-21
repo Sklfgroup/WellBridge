@@ -24,6 +24,9 @@ public record CreatePatientRequest(
         @NotBlank(message = "Code is required")
         @JsonProperty("code") String code,
 
+        @NotBlank(message = "BloodGroup is require")
+        @JsonProperty("BloodGroup") String BloodGroup,
+
         @NotBlank(message = "Number is required")
         @JsonProperty("number") String number,
 
@@ -47,6 +50,7 @@ public record CreatePatientRequest(
         entity.setNumber(number);
         entity.setDateOfBirth(dateOfBirth);
         entity.setAdresse(adresse);
+        entity.setBloodGroup(BloodGroup);
         entity.setUserRole(userRole);
 
         // Création de l'information médicale
